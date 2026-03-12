@@ -20,6 +20,32 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 
 
+\### Week 2 — Conveyor Belt Simulation
+
+\- TON timer — belt runs for set duration
+
+\- CTU counter — counts items passing sensor
+
+\- Auto stop after 10 items
+
+\- Simulated and tested in CODESYS Control Win V3
+
+
+
+\### Week 3 — Temperature Sensor and Alarm System
+
+\- REAL data type for decimal temperature values
+
+\- GT comparison — high temperature alarm above 80°C
+
+\- LT comparison — low temperature alarm below 20°C
+
+\- AlarmLight triggers on any alarm condition
+
+\- Simulated and tested in CODESYS Control Win V3
+
+
+
 \## Skills
 
 \- CODESYS V3
