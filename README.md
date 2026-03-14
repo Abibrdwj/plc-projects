@@ -32,17 +32,27 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 
 
-\### Week 3 — Temperature Sensor and Alarm System
+\### Week 3 — Analog Temperature Monitoring
 
-\- REAL data type for decimal temperature values
+\- REAL data type for analog values
 
-\- GT comparison — high temperature alarm above 80°C
+\- High and low temperature alarms
 
-\- LT comparison — low temperature alarm below 20°C
-
-\- AlarmLight triggers on any alarm condition
+\- Comparison expressions in contacts
 
 \- Simulated and tested in CODESYS Control Win V3
+
+
+
+\### Week 4 — Pick and Place Robot Sequence
+
+\- Step sequencing with BOOL flags
+
+\- SET and RESET coils
+
+\- TON timer for grip hold delay
+
+\- Full 5 step cycle simulated successfully
 
 
 
