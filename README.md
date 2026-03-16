@@ -56,6 +56,20 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 
 
+\### Week 5 — Safety Circuit with E-Stop
+
+\- Emergency stop with fault latching
+
+\- Safety reset — operator must deliberately reset after E-Stop
+
+\- SafetyOK condition preventing automatic restart
+
+\- Fault indicator light
+
+\- IEC 62061 / ISO 13849 safety principles applied
+
+
+
 \## Skills
 
 \- CODESYS V3
