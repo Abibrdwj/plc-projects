@@ -1,6 +1,36 @@
-\# PLC Projects — Abhishek Raghunath
+\# PLC Automation Portfolio — Abhishek Raghunath
 
-Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotics journey.
+
+
+M.Sc. Mechatronics \& Robotics — Hochschule Schmalkalden, Germany  
+
+Focus: Industrial automation, PLC programming, Industry 4.0 integration  
+
+GitHub: github.com/Abibrdwj
+
+
+
+\---
+
+
+
+\## About This Repository
+
+
+
+Structured PLC automation projects built in CODESYS V3, progressing from 
+
+basic motor control to full industrial system integration with OPC-UA and 
+
+Python dashboards.
+
+
+
+All projects are simulation-tested and documented to industry standards.
+
+
+
+\---
 
 
 
@@ -10,11 +40,11 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 \### Week 1 — Motor ON/OFF Control
 
-\- Simple start/stop motor control
+\- Start/stop motor control with seal-in circuit
 
-\- Seal-in (latching) circuit
+\- Normally Closed stop button — fail-safe design
 
-\- Normally Closed stop button (fail-safe design)
+\- BOOL variables, ladder logic fundamentals
 
 \- Simulated and tested in CODESYS Control Win V3
 
@@ -28,31 +58,31 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 \- Auto stop after 10 items
 
-\- Simulated and tested in CODESYS Control Win V3
+\- Modular 4-rung logic structure
 
 
 
 \### Week 3 — Analog Temperature Monitoring
 
-\- REAL data type for analog values
+\- REAL data type for analog sensor values
 
 \- High and low temperature alarms
 
-\- Comparison expressions in contacts
+\- Comparison expressions in ladder contacts
 
-\- Simulated and tested in CODESYS Control Win V3
+\- Boundary condition testing
 
 
 
 \### Week 4 — Pick and Place Robot Sequence
 
-\- Step sequencing with BOOL flags
+\- 5-step sequence using BOOL step flags
 
-\- SET and RESET coils
+\- SET and RESET coils for state management
 
 \- TON timer for grip hold delay
 
-\- Full 5 step cycle simulated successfully
+\- Full cycle simulation — pick, grip, place, release, home
 
 
 
@@ -60,7 +90,7 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 \- Emergency stop with fault latching
 
-\- Safety reset — operator must deliberately reset after E-Stop
+\- Operator-initiated safety reset
 
 \- SafetyOK condition preventing automatic restart
 
@@ -70,13 +100,73 @@ Automation projects built in CODESYS as part of my M.Sc. Mechatronics \& Robotic
 
 
 
-\## Skills
+\---
 
-\- CODESYS V3
 
-\- Ladder Logic (LD)
 
-\- IEC 61131-3 standard
+\## Current Roadmap
 
-\- PLC simulation and testing
+
+
+\### Phase A — Foundation (Weeks 1–5) ✅ COMPLETE
+
+Core PLC logic: motor control, timers, counters, analog, sequencing, safety
+
+
+
+\### Phase B — Integration (Week 6 onwards) 🔄 IN PROGRESS
+
+\- OPC-UA server setup in CODESYS
+
+\- Python OPC-UA client
+
+\- CSV data logging
+
+\- Alarm architecture
+
+\- Live dashboard
+
+
+
+\### Phase C — Differentiation (Future)
+
+\- Anomaly detection
+
+\- Predictive maintenance integration
+
+\- TIA Portal migration (Siemens S7-1200)
+
+\- Full Smart Production Cell simulation
+
+
+
+\---
+
+
+
+\## Tools \& Technologies
+
+\- CODESYS V3 — PLC simulation
+
+\- Ladder Logic (LD) — IEC 61131-3 standard
+
+\- Python — OPC-UA client, dashboard
+
+\- Siemens TIA Portal — SCE training modules (S7-1200)
+
+\- Git / GitHub — version control
+
+
+
+\---
+
+
+
+\## Contact
+
+Abhishek Raghunath  
+
+M.Sc. Mechatronics \& Robotics  
+
+Hochschule Schmalkalden, Germany
 
