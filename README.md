@@ -2,9 +2,9 @@
 
 
 
-M.Sc. Mechatronics \& Robotics — Hochschule Schmalkalden, Germany  
+M.Sc. Mechatronics \& Robotics — Hochschule Schmalkalden, Germany
 
-Focus: Industrial automation, PLC programming, Industry 4.0 integration  
+Focus: Industrial automation, PLC programming, Industry 4.0 integration
 
 GitHub: github.com/Abibrdwj
 
@@ -18,9 +18,9 @@ GitHub: github.com/Abibrdwj
 
 
 
-Structured PLC automation projects built in CODESYS V3, progressing from 
+Structured PLC automation projects built in CODESYS V3, progressing from
 
-basic motor control to full industrial system integration with OPC-UA and 
+basic motor control to full industrial system integration with OPC-UA and
 
 Python dashboards.
 
@@ -104,6 +104,36 @@ All projects are simulation-tested and documented to industry standards.
 
 
 
+\## Flagship Project — Smart Conveyor Monitoring System
+
+
+
+\### Version 1 — Integrated PLC Program (Week 6)
+
+Full integration of all weekly modules into one industrial program:
+
+\- Motor latch with safety interlock
+
+\- Conveyor belt with TON timer monitoring
+
+\- Accurate item counting using R\_TRIG edge detection
+
+\- Analog temperature monitoring with high/low alarms
+
+\- E-Stop safety circuit with fault latch and operator reset
+
+\- SystemReady indicator — all conditions healthy
+
+
+
+Status: PLC layer complete — OPC-UA integration next
+
+
+
+\---
+
+
+
 \## Current Roadmap
 
 
@@ -164,9 +194,9 @@ Core PLC logic: motor control, timers, counters, analog, sequencing, safety
 
 \## Contact
 
-Abhishek Raghunath  
+Abhishek Raghunath
 
-M.Sc. Mechatronics \& Robotics  
+M.Sc. Mechatronics \& Robotics
 
 Hochschule Schmalkalden, Germany
 
