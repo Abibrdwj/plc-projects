@@ -170,6 +170,32 @@ Core PLC logic: motor control, timers, counters, analog, sequencing, safety
 
 
 
+\## Python Automation — Phase 1 \& 2 Complete
+
+
+
+\### Days 1–6 — Core Python for Industrial Automation
+
+\- Variables, data types, math operations
+
+\- Loops, lists, alarm logic
+
+\- Functions and dictionaries
+
+\- File handling and CSV logging
+
+\- NumPy and Pandas for sensor data analysis
+
+\- Matplotlib — temperature charts, alarm visualisation
+
+
+
+All scripts located in `/python-automation/`
+
+Next: Timestamps, OPC-UA client, live dashboard
+
+
+
 \---
 
 
