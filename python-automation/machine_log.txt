@@ -1,0 +1,9 @@
+[26-05-28 18:02:41] Conveyor Belt A - 83.2 °C - ALARM
+[26-05-28 18:02:41] Conveyor Belt B - 72.1 °C - OK
+[26-05-28 18:02:41] Conveyor Belt C - 75.5 °C - OK
+[26-05-28 18:02:42] Conveyor Belt A - 83.2°C - ALARM
+[26-05-28 18:02:42] Conveyor Belt A - 79.1°C - OK
+[26-05-28 18:02:45] Conveyor Belt A - 85.5°C - ALARM
+[26-05-28 18:02:45] Conveyor Belt A - 83.2°C - ALARM
+[26-05-28 18:02:45] Conveyor Belt A - 79.1°C - OK
+[26-05-28 18:02:45] Conveyor Belt A - 85.5°C - ALARM
