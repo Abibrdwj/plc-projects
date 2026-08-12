@@ -4,3 +4,4 @@
 *.bootinfo_guids
 *.compileinfo
 *.precompilecache
+.ipynb_checkpoints/

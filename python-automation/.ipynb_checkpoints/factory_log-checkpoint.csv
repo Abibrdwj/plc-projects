@@ -1,6 +1,0 @@
-Timestamp,Machine,Temperature,Status
-26-05-28 18:02:47,Conveyor Belt A,83.2,ALARM
-26-05-28 18:02:47,Conveyor Belt B,72.1,OK
-26-05-28 18:02:47,Conveyor Belt C,75.5,OK
-26-05-28 18:02:47,Packaging Unit,91.3,ALARM
-26-05-28 18:02:47,Welding Station,78.0,OK
