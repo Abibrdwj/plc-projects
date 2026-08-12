@@ -1,0 +1,71 @@
+﻿FUNCTION_BLOCK "FB_SmartConveyor"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      EStopButton : Bool;
+      StartButton : Bool;
+      StopButton : Bool;
+      PartSensor : Bool;
+      Temperature : Real;
+      ResetButton : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      Motor_Run : Bool;
+      SystemReady : Bool;
+      FaultActive : Bool := false;
+      ItemCount : Int := 0;
+      TempAlarmHigh : Bool := false;
+      TempAlarmLow : Bool := false;
+   END_VAR
+
+   VAR 
+      FaultLatch : Bool;
+      HighTempLimit : Real := 80.0;
+      LowTempLimit : Real := 5.0;
+      CountResetLimit : Int := 9999;
+      PartTrig {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      ItemCounter {InstructionName := 'CTU_INT'; LibVersion := '1.0'} : CTU_INT;
+   END_VAR
+
+
+BEGIN
+	#PartTrig(CLK := #PartSensor);
+	#ItemCounter(CU := #PartTrig.Q,
+	             R := (#ItemCount >= #CountResetLimit),
+	             PV := #CountResetLimit);
+	
+	IF NOT #EStopButton THEN
+	    #FaultLatch := TRUE;
+	END_IF;
+	
+	IF #FaultLatch AND #ResetButton THEN
+	    #FaultLatch := FALSE;
+	END_IF;
+	
+	#FaultActive := #FaultActive;
+	
+	IF #StartButton AND NOT #FaultLatch THEN
+	    #Motor_Run := TRUE;
+	END_IF;
+	
+	IF #StopButton OR #FaultLatch THEN
+	    #Motor_Run := FALSE;
+	END_IF;
+	
+	
+	IF #Temperature > #HighTempLimit THEN
+	    #TempAlarmHigh := TRUE;
+	ELSE
+	    #TempAlarmHigh := FALSE;
+	END_IF;
+	
+	IF #Temperature < #LowTempLimit THEN
+	    #TempAlarmLow := TRUE;
+	ELSE
+	    #TempAlarmLow := FALSE;
+	END_IF;
+	
+	#SystemReady := NOT #FaultLatch AND NOT #TempAlarmHigh AND NOT #TempAlarmLow;
+END_FUNCTION_BLOCK
+
