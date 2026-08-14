@@ -43,7 +43,7 @@ BEGIN
 	    #FaultLatch := FALSE;
 	END_IF;
 	
-	#FaultActive := #FaultActive;
+	#FaultActive := #FaultLatch;
 	
 	IF #StartButton AND NOT #FaultLatch THEN
 	    #Motor_Run := TRUE;
