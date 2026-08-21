@@ -5,3 +5,4 @@
 *.compileinfo
 *.precompilecache
 .ipynb_checkpoints/
+python-automation/conveyor_log.csv
