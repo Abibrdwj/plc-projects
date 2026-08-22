@@ -6,3 +6,4 @@
 *.precompilecache
 .ipynb_checkpoints/
 python-automation/conveyor_log.csv
+python-automation/pipeline_test.csv
