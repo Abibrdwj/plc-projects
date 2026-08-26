@@ -1,119 +1,151 @@
-# Smart Conveyor Monitoring System — PLC + OPC UA + Python
+# Smart Production Cell — PLC + OPC UA + Python Integration
+**Abhishek Raghunath** | M.Sc. Mechatronics & Robotics, Hochschule Schmalkalden
+[github.com/Abibrdwj/plc-projects](https://github.com/Abibrdwj/plc-projects)
 
-**Abhishek Raghunath** | M.Sc. Mechatronics & Robotics | Hochschule Schmalkalden
-github.com/Abibrdwj/plc-projects
+Cross-platform industrial automation build: safety-critical PLC logic implemented on two
+platforms (CODESYS ST, Siemens TIA Portal SCL), paired with a Python monitoring pipeline
+built to the same shape a live OPC-UA feed would need. Simulation-based — PLCSIM V20 and
+CODESYS simulation, no physical hardware.
 
-Cross-platform industrial automation project using CODESYS ST, Siemens TIA Portal SCL, S7-1200, OPC UA and Python.
+---
 
 ## What This Is
 
-Integrated PLC station controller — motor safety interlock, rising-edge item counting with auto-rollover, dual-threshold temperature alarming, and a latched E-Stop fault circuit designed around manual-reset safety principles. Built in CODESYS V3 (Structured Text), then ported to Siemens TIA Portal (SCL), targeting a Siemens S7-1200 CPU 1214C, to prove platform-independent logic design. Phase 2 adds a live OPC UA server and Python monitoring dashboard.
+An integrated station controller — motor safety interlock, edge-triggered item counting
+with rollover protection, dual-threshold temperature alarming, and a manual-reset E-Stop
+fault latch — built first in CODESYS (Structured Text), then independently re-implemented
+in Siemens TIA Portal (SCL) targeting an S7-1200, to prove the logic design travels across
+platforms rather than being tied to one toolchain.
 
-**Proven:** CODESYS logic · Siemens SCL port · S7-1200 CPU configuration (PLCSIM-verified) · Python data processing · CSV logging · alarm logic · visualization
-**In progress:** live OPC UA server · PLC → Python live data flow · live dashboard · alarm acknowledgment/history
+On the monitoring side: a Python pipeline (data generation, persistent CSV logging, a
+timed polling loop, a dashboard, and a summary analytics panel) built to the exact
+interface shape a real OPC-UA feed will plug into — the mock-data layer is the one thing
+standing between this and a live system, and *why* it's still mock is a specific,
+root-caused finding, not an unfinished corner.
 
-**Architecture (target — see Proven/In progress above for what's live today):**
+---
 
-PLC logic (CODESYS ST → TIA Portal SCL)
-↓
-PLCSIM / S7-1200 CPU simulation
-↓
-OPC UA server (onboard S7-1200)
-↓
-Python OPC UA client (asyncua)
-↓
-CSV logging + alarm detection
-↓
-Dashboard
+## Status at a Glance
 
-## System Specifications
-
-| Parameter | Value |
+| Layer | State |
 |---|---|
-| Networks (CODESYS baseline) | 14 |
-| Variables | 22 |
-| Item counter | R_TRIG + CTU_INT, auto-rollover at 9999 |
-| High temp threshold | 80.0°C |
-| Low temp threshold | 5.0°C |
-| Safety I/O | EStopButton, StartButton, StopButton, ResetButton |
-| Fault types handled | E-Stop, high temp, low temp |
-| CODESYS build status | 0 errors, 0 warnings |
-| TIA Portal (SCL) build status | 0 errors, 0 warnings |
-| Target CPU (configured, PLCSIM-verified) | Siemens S7-1200 CPU 1214C DC/DC/DC (6ES7 214-1AG40-0XB0), firmware V4.7 |
+| CODESYS ST — FB_SmartConveyor | **Complete**, simulation-tested, 0 errors / 0 warnings |
+| TIA Portal SCL — ported FB1 | **Complete**, PLCSIM-verified end-to-end, 0 errors / 0 warnings |
+| Python monitoring pipeline | **Complete on mock data** — generation, logging, polling, dashboard, alarm summary |
+| OPC-UA (CODESYS) | **Attempted, blocked on unresolved auth error** (`BadIdentityTokenInvalid`) — pivoted to TIA. Root-cause + live rebuild planned as Stage 2. |
+| OPC-UA (TIA) | **Blocked — root-caused, documented** (see below). Not an open task. |
+
+---
+
+## OPC-UA: Attempted, Root-Caused, Deferred
+
+Live OPC-UA is not running on either platform yet — but it wasn't for lack of trying,
+and both dead ends are documented rather than glossed over.
+
+**First attempt — CODESYS.** An OPC-UA server was brought up on CODESYS and was
+visible to UaExpert, but the Python client repeatedly failed to authenticate against
+it with `BadIdentityTokenInvalid`. The specific cause (security policy mismatch,
+token type, or certificate trust) wasn't isolated at the time — rather than sink
+further time into an undiagnosed auth failure with no clear next debugging step, the
+project pivoted to Siemens' native S7-1200 OPC-UA stack, which also matched the TIA
+port already underway.
+
+**Second attempt — TIA / S7-1200.** Root-caused by direct testing, not assumed from
+documentation:
+
+> **PLCSIM V20 Standard does not support OPC-UA.** An OPC-UA server requires
+> **PLCSIM Advanced** — a separate, higher license tier. Even with Advanced, OPC-UA
+> server functionality is only available for **S7-1500** CPUs, not the **S7-1200**
+> used here.
+
+So the TIA path is blocked by a licensing/hardware tier, not a design gap or a repeat
+of the CODESYS auth problem. **Stage 2** returns to CODESYS to actually isolate and
+fix the `BadIdentityTokenInvalid` cause — rather than route around it a second time —
+once the current mock-data Python pipeline (Stage 1) is complete. Two independent
+blockers, two independent root causes to chase down, one clear next step.
+
+---
 
 ## Engineering Decisions
 
-**R_TRIG edge detection on item sensor**
-A standard NO contact counts every scan cycle while the sensor is blocked — one physical item can register hundreds of false counts at PLC scan speed. R_TRIG fires exactly one pulse per 0→1 transition regardless of dwell time, giving accurate single-count-per-item behavior at any belt speed.
+**R_TRIG edge detection on the item sensor.** A plain NO contact counts every scan
+cycle while blocked — one item would register hundreds of false counts at PLC scan
+speed. R_TRIG fires exactly one pulse per 0→1 transition, independent of dwell time.
 
-**Reset-dominant fault latch with mandatory manual reset**
-A direct E-Stop interlock would allow the motor to restart automatically the instant the E-Stop is released — a safety violation. The fault latch forces a deliberate, physically separate ResetButton acknowledgment after the E-Stop condition clears, with Reset guaranteed to win under simultaneous Set/Reset. The latch/reset behavior is designed in accordance with the manual-reset principles described in IEC 62061 / ISO 13849; this is a portfolio project, not a certified safety implementation. It closes a scan-cycle-level hazard regardless: combining Reset and Start into one input removes the operator's deliberate decision point between "fault cleared" and "motor running."
+**Reset-dominant fault latch, mandatory manual reset.** A direct E-Stop interlock
+lets the motor restart the instant E-Stop is released — a safety violation. The latch
+requires a physically separate `ResetButton` acknowledgment, with reset guaranteed to
+win on a simultaneous set/reset. Designed around the manual-reset principles in
+IEC 62061 / ISO 13849 (portfolio project, not a certified safety implementation) —
+but it closes a real scan-cycle hazard regardless: combining Reset and Start into one
+input removes the operator's deliberate decision point between "fault cleared" and
+"motor running."
 
-**Counter rollover pinned to an explicit limit, not the type's max value**
-ItemCount resets at a defined ceiling (9999) rather than silently wrapping at the INT type boundary — preventing an undetected wraparound from masquerading as a valid low count on a long-running line.
+**Counter rollover pinned to an explicit ceiling, not the type's max value.**
+`ItemCount` resets at a defined limit (9999) rather than silently wrapping at the INT
+boundary, so a long-running line can't wrap around undetected into a plausible-looking
+low count.
 
-**SystemReady composite status bit**
-`SystemReady = NOT FaultLatch AND NOT TempAlarmHigh AND NOT TempAlarmLow` — a single bit a SCADA/HMI layer can poll to confirm production-ready state without querying multiple internal variables.
+**SystemReady composite status bit.** `SystemReady = NOT FaultLatch AND NOT
+TempAlarmHigh AND NOT TempAlarmLow` — one bit a SCADA/HMI layer can poll instead of
+querying multiple internal variables.
 
-**Explicit default values on safety-relevant outputs — as an audit discipline, not a safety mechanism**
-TIA's compiler flagged four output variables without explicit defaults. Setting them is a documentation choice, not a safety fix: an unset BOOL and an explicit FALSE resolve identically, so this doesn't change first-scan risk. It exists to make the assumed startup state auditable, distinct from the real first-scan hazard (a physical E-Stop already tripped at power-on, before the output has caught up) — a separate concern this doesn't address.
+---
 
 ## Platform Port: CODESYS ST → TIA Portal SCL
 
-The core control logic (`FB_SmartConveyor`) was deliberately re-implemented on a second industrial platform to validate that the design travels — not just that it compiles once.
+Re-implemented on a second platform to prove the design travels, not just that it
+compiles once.
 
 | Issue hit during the port | Resolution |
 |---|---|
-| First block was accidentally created as an FC | Caught before variable entry — an FC has no instance memory, which would have silently broken every `Static` variable in the design |
-| R_TRIG placed under the Temp interface section | Rejected — Temp memory clears every scan, and edge detection requires persistence across scans. Moved to Static |
 | TIA's counter instruction is typed by variant | Used `CTU_INT` (not generic CTU) to match `ItemCount`'s INT type |
-| `CTU_INT` requires an explicit PV parameter | Wired `PV := CountResetLimit` to keep both platforms' rollover ceiling aligned |
+| `CTU_INT` requires an explicit `PV` parameter | Wired `PV := CountResetLimit` to keep both platforms' rollover ceiling aligned |
 | Reset parameter naming differs across platforms | TIA's `CTU_INT` uses `R`; CODESYS uses `RESET` |
+| R_TRIG instance placed in Temp instead of Static | Temp clears every scan; edge detection needs persistence — moved to Static |
+| `PartTrig` (R_TRIG) declared but never called | `ItemCount` stuck at 0 despite a clean compile — found via logic review against the CODESYS baseline, fixed |
+| `FaultActive` self-assigned instead of reading `FaultLatch` | Silently never reported fault state despite 0 errors/0 warnings — found and fixed during review |
 
-Result: `FB_SmartConveyor` ported to SCL (block FB1), compiled clean at 0 errors / 0 warnings, committed to GitHub with interface and code-body screenshots.
+Full station compiles clean, downloaded to a simulated S7-1200 CPU 1214C (firmware
+V4.7) on PLCSIM V20. Full end-to-end safety-latch sequence verified live: forced
+E-Stop → `FaultActive` correctly latched TRUE → forced Reset → correctly cleared →
+forced Start → `Motor_Run` correctly triggered. Matches hand-traced logic exactly.
 
-## CODESYS OPC UA — Attempted, Root-Caused, Migrated
+---
 
-CODESYS OPC UA integration was initially attempted but abandoned after persistent `BadIdentityTokenInvalid` authentication failures — UaExpert could detect the server endpoint, but the Python client could not authenticate against it. After isolating the issue to the authentication layer, the project was migrated to Siemens' native S7-1200 OPC UA stack to reduce integration risk and align with the Siemens industrial ecosystem already in use for the TIA Portal port.
+## Python Monitoring Pipeline
 
-## Python Data Layer
-
-Supporting Python modules for sensor data processing, alarm logic, and visualization — the data layer Phase 2's OPC UA client will feed live values into.
-
-| Day | Module | Outcome |
-|---|---|---|
-| 1–2 | Core logic | Alarm threshold functions handling multi-condition sensor states |
-| 3 | Data structures | Dictionary-based sensor state management for multi-variable logging |
-| 4 | CSV file handling | Persistent sensor data logging with file append and read-back |
-| 5 | NumPy + pandas | Statistical analysis pipeline on simulated temperature datasets |
-| 6 | Matplotlib | Temperature trend charts with alarm-threshold overlay visualization |
-
-**Next:** `asyncua` Python client connecting to the live S7-1200 OPC UA endpoint, replacing simulated inputs with real PLC data — currently blocked on PLCSIM export-control approval (see Current Gaps).
-
-## Current Gaps — Actively Addressing
-
-| Gap | Status |
+| Component | What it does |
 |---|---|
-| S7-PLCSIM V20 install | Blocked — export-control review submitted (German/EU regulated software), multi-day turnaround |
-| Live OPC UA endpoint verification | Blocked behind PLCSIM — the server only exists on a running CPU instance; no compile-only equivalent |
-| OPC UA variable mapping (Python ↔ PLC) | Phase 2 — scaffolding against a mock endpoint now, to be ready the moment PLCSIM is approved |
-| Alarm management (code, timestamp, ACK) | Phase 2 |
-| Analog wire-break / sensor-fault detection | Deferred — will use S7-1200 native analog diagnostic bits, needs IEC Timers/Counters + Analog Values modules first |
+| `next_reading()` | Mock sensor data generator |
+| `log_reading()` | CSV logger with real timestamping |
+| `run_pipeline()` | Timed polling loop (`time.sleep()`-paced) tying generation and logging together |
+| Dashboard | Matplotlib temperature trend vs. real timestamp, with HIGH/LOW sustained-alarm markers overlaid |
+| Summary panel | Alarm counts, longest alarm streaks, uptime % — returned as a structured result |
+
+Dashboard and summary panel are both verified against known-answer test fixtures
+(clean logs and hand-built alarm-crossing fixtures), not just eyeballed.
+
+**Why mock data, by design:** the pipeline is built to the interface shape a real
+OPC-UA read will drop into — `next_reading()` is the single seam that gets replaced.
+Nothing downstream (logging, dashboard, alarms) changes when that happens.
+
+---
 
 ## Roadmap
 
-**Phase A — CODESYS Foundation ✅ Complete**
-14-network integrated station controller, full safety logic, 0 errors / 0 warnings.
+- **Phase A — CODESYS Foundation** ✅ Complete. Full safety logic, 0 errors/0 warnings.
+- **Phase B — TIA Portal Port** ✅ Complete. PLCSIM-verified, 0 errors/0 warnings.
+- **Phase C — Python Monitoring Pipeline (mock data)** ✅ Complete. Generation → logging → polling → dashboard → alarm summary.
+- **Phase D — CODESYS-Live OPC-UA (retry)** 📋 Planned, not yet successful. First pass hit an unresolved `BadIdentityTokenInvalid` auth error on the `asyncua` client and was shelved in favor of the TIA path; this phase returns to actually root-cause it and get a live read/subscribe working. Adds a second PLC ecosystem (CODESYS-family: WAGO, Beckhoff/TwinCAT) to the toolchain shown here.
+- **Phase E — Multi-Machine Handling** 📋 Planned. Extend the pipeline from single-source to multiple simulated machines/sensors feeding the same logging and alarm layer — not yet started.
+- **Phase F — Reliability hardening** 📋 Planned. Reconnect-on-disconnect, malformed-read handling, locked-file handling — the gap between "a script" and "a monitoring system."
 
-**Phase B — TIA Portal Port ✅ Complete**
-`FB_SmartConveyor` re-implemented in SCL, targeting a Siemens S7-1200 CPU 1214C, 0 errors / 0 warnings, committed.
-
-**Phase C — OPC UA + Dashboard 🔄 In Progress**
-PLCSIM approval pending → live OPC UA server → Python `asyncua` client → CSV logging + alarm detection → dashboard.
-
-**Phase D — Differentiation 📋 Planned**
-Analog wire-break/sensor-fault detection, dual-latch NEG_EDGE energy-saving extension, anomaly detection.
+---
 
 ## Stack
 
-CODESYS V3 (IEC 61131-3, Structured Text) · Siemens TIA Portal V20 (SCL) · S7-1200 · OPC UA · Python (pandas, NumPy, matplotlib, asyncua) · Git
+CODESYS V3 (IEC 61131-3, Structured Text) · Siemens TIA Portal V20 (SCL) · S7-1200
+CPU 1214C · PLCSIM V20 · Python (pandas, NumPy, matplotlib) · Git
+
+`asyncua` (first-pass client attempted against CODESYS, connection not yet live — Phase D retries this)
