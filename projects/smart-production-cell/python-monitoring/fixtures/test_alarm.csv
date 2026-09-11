@@ -1,0 +1,12 @@
+timestamp,temp,item_count,motor_run,system_ready,fault_active,temp_alarm_high,temp_alarm_low
+t0,75.0,1,True,True,False,False,False
+t1,81.0,2,True,False,False,True,False
+t2,82.0,3,True,False,False,True,False
+t3,83.0,4,True,False,False,True,False
+t4,70.0,5,True,True,False,False,False
+t5,4.9,6,True,False,False,False,True
+t6,4.5,7,True,True,False,False,True
+t7,4.3,8,True,True,False,False,True
+t8,4.6,9,True,True,False,False,True
+t9,4.2,10,True,True,False,False,True
+t10,4.4,11,True,True,False,False,True

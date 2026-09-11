@@ -5,7 +5,3 @@
 *.compileinfo
 *.precompilecache
 .ipynb_checkpoints/
-python-automation/conveyor_log.csv
-python-automation/pipeline_test.csv
-python-automation/test_alarm.csv
-python-automation/dashboard_verify.csv

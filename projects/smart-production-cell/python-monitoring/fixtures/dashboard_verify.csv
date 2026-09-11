@@ -1,0 +1,7 @@
+timestamp,temp,item_count,motor_run,system_ready,fault_active,temp_alarm_high,temp_alarm_low
+2026-08-24T10:00:00,24,0,True,True,False,False,False
+2026-08-24T10:00:02,25,1,True,True,False,False,False
+2026-08-24T10:00:04,81,2,True,False,False,True,False
+2026-08-24T10:00:06,83,3,True,False,False,True,False
+2026-08-24T10:00:08,84,4,True,False,False,True,False
+2026-08-24T10:00:10,22,5,True,True,False,False,False
