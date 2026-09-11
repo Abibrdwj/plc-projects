@@ -5,3 +5,4 @@
 *.compileinfo
 *.precompilecache
 .ipynb_checkpoints/
+learning/siemens-sce/*.pdf
